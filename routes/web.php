@@ -31,12 +31,14 @@ Route::get('/email/verify', function (Request $request) {
 
     // Cập nhật trạng thái xác thực email
     DB::table('users')->where('id', $user->id)->update([
-        'email_verified_at' => now(),
+        'verified' => true, // Cập nhật verified thành true
+        'email_verified_at' => now(), // Cập nhật thời gian xác thực
         'email_verification_token' => null, // Xóa token sau khi xác thực
     ]);
 
     return redirect('/login')->with('status', 'Email verified successfully!');
 })->name('verification.verify');
+
 
 // Thêm middleware 'auth' và 'verified' vào các route yêu cầu xác thực email
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -47,9 +49,22 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', function (Request $request) {
     $credentials = $request->only('id', 'password');
 
+    // if (Auth::guard('web')->attempt($credentials)) {
+    //     return redirect()->route('home')->with('success', 'Logged in as User');
+    // }
     if (Auth::guard('web')->attempt($credentials)) {
+        $user = Auth::user();
+
+        if (!$user->verified) {
+            Auth::logout(); // Đăng xuất nếu email chưa được xác thực
+            return redirect()->route('login')->withErrors([
+                'email' => 'Please verify your email before logging in.',
+            ]);
+        }
+
         return redirect()->route('home')->with('success', 'Logged in as User');
     }
+
 
     if (Auth::guard('admin')->attempt($credentials)) {
         return redirect()->route('admin.home')->with('success', 'Logged in as Admin');

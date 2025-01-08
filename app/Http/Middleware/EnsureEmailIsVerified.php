@@ -17,10 +17,10 @@ class EnsureEmailIsVerified
      */
     public function handle(Request $request, Closure $next)
     {
-        // Kiểm tra xem người dùng đã xác thực email chưa
-        if (Auth::check() && is_null(Auth::user()->email_verified_at)) {
-            // Nếu chưa xác thực email, chuyển hướng người dùng tới trang thông báo yêu cầu xác thực email
-            return redirect()->route('verification.notice');
+        if (Auth::check() && !Auth::user()->verified) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Please verify your email before accessing this page.',
+            ]);
         }
 
         return $next($request);
