@@ -28,12 +28,21 @@ class LoginController extends Controller
             'password' => 'required|string', // Kiểm tra password
         ]);
 
-        // Attempt to authenticate the user by ID and Password
-        $user = User::where('id', $validated['id'])->first(); // Tìm người dùng qua ID
+        // Tìm người dùng qua ID
+        $user = User::where('id', $validated['id'])->first();
 
         if ($user && Hash::check($validated['password'], $user->password)) {
-            // Nếu tìm thấy người dùng và mật khẩu hợp lệ
-            Auth::login($user); // Đăng nhập người dùng
+            // Kiểm tra nếu người dùng đã xác thực email hay chưa
+            if (is_null($user->email_verified_at)) {
+                // Đăng xuất người dùng ngay lập tức nếu email chưa được xác thực
+                Auth::logout();
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Please verify your email before logging in.',
+                ]);
+            }
+
+            // Nếu tất cả đều hợp lệ, đăng nhập người dùng
+            Auth::login($user);
             return redirect()->route('home');
         }
 
@@ -42,6 +51,7 @@ class LoginController extends Controller
             'id' => 'The provided credentials are incorrect.',
         ]);
     }
+
 
     /**
      * Display the specified resource.

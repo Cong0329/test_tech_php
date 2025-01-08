@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
+    <!-- <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Verify Your Email Address') }}</div>
@@ -23,6 +23,14 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+
+    <p>Hello {{ $user->name }},</p>
+    <p>Please verify your email by clicking the link below:</p>
+    <a href="{{ url('email/verify/' . $user->id . '/' . $user->email_verification_token) }}">
+        Verify Email
+    </a>
+
+
 </div>
 @endsection

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Mail\CustomEmailVerification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -14,13 +17,31 @@ class RegisterController extends Controller
      */
     public function index()
     {
-        // Hiển thị form đăng ký
         return view('auth.register');
     }
 
     /**
      * Handle the registration of the user.
      */
+    // public function store(Request $request)
+    // {
+    //     // Validate and create user
+    //     $user = User::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'password' => bcrypt($request->password),
+    //         'email_verification_token' => \Illuminate\Support\Str::random(32),
+    //     ]);
+
+    //     // Gửi email xác thực
+    //     $mailer = new CustomEmailVerification($user);
+    //     if (!$mailer->send()) {
+    //         return redirect()->back()->with('error', 'Failed to send verification email.');
+    //     }
+
+    //     return redirect()->route('login')->with('success', 'Registration successful. Please check your email for verification link.');
+    // }
+
     public function store(Request $request)
     {
         // Xác thực dữ liệu
@@ -31,20 +52,27 @@ class RegisterController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('register')  // Quay lại trang đăng ký
-                             ->withErrors($validator) // Hiển thị lỗi xác thực
-                             ->withInput(); // Giữ lại thông tin đã nhập
+            return redirect()->route('register')
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        // Tạo mới người dùng
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password); // Mã hóa mật khẩu
-        $user->save();
+        // Tạo người dùng mới và tạo email_verification_token
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'email_verification_token' => Str::random(32), // Token ngẫu nhiên
+        ]);
 
-        // Đăng ký thành công, chuyển hướng đến trang đăng nhập
-        return redirect()->route('login')->with('success', 'Registration successful');
+        // Gửi email xác thực
+        $mailer = new CustomEmailVerification($user);
+        if (!$mailer->send()) {
+            return redirect()->back()->with('error', 'Failed to send verification email.');
+        }
+        
+
+        return redirect()->route('login')->with('success', 'Registration successful. Please check your email to verify your account.');
     }
 
     /**
