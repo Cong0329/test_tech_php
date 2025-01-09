@@ -4,7 +4,7 @@
 <div class="container-fluid p-0">
         
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-        <div class="container">
+        <div class="container py-1">
             <a class="navbar-brand" href="{{ url('/admin/home') }}">
                 {{ config('app.name', 'Laravel') }}
             </a>
@@ -92,7 +92,7 @@
             @elseif (Request::is('admin/customer'))
                 @yield('customer')
             @else
-                <h1>Hello Toebisu</h1>
+                @yield('home_child')
             @endif
         </div>
     </div>

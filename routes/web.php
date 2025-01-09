@@ -11,24 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-Route::middleware(['auth:web'])->group(function () {
-    Route::get('/', function () {
-        return view('home');
-    })->name('home');
-});
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/home', function () {
-        return view('admin.home');
-    })->name('admin.home');
-    
-    Route::get('/admin/member', function () {
-        return view('admin.member', ['content' => 'member']);
-    })->name('member.index');
-
-    Route::get('/admin/customer', function () {
-        return view('admin.customer', ['content' => 'customer']);
-    })->name('customer.index');
-});
 
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
@@ -95,3 +77,27 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->name('logout');
 
+Route::middleware(['auth:web'])->group(function () {
+    Route::get('/', function () {
+        return view('home');
+    })->name('home');
+});
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/home', function () {
+        return view('admin.home');
+    })->name('admin.home');
+
+    Route::get('/admin/home_child', function () {
+        return view('admin.home_child', ['content' => 'home_child']);
+    })->name('home_child.index');
+    
+    Route::get('/admin/member', [MemberController::class, 'index'])->name('member.index');
+
+    Route::get('/admin/customer', function () {
+        return view('admin.customer', ['content' => 'customer']);
+    })->name('customer.index');
+});
+
+Route::get('/{any}', function() {
+    return redirect()->route('login');
+})->where('any', '.*');
