@@ -67,6 +67,10 @@
                 <input type="password" class="form-control" id="password" name="password">
                 <small class="form-text text-muted">Leave blank if you don't want to change the password.</small>
             </div>
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+            </div>
 
             <div class="mb-3">
                 <label for="avatar" class="form-label">Avatar</label>

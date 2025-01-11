@@ -44,9 +44,6 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', function (Request $request) {
     $credentials = $request->only('id', 'password');
 
-    // if (Auth::guard('web')->attempt($credentials)) {
-    //     return redirect()->route('home')->with('success', 'Logged in as User');
-    // }
     if (Auth::guard('web')->attempt($credentials)) {
         $user = Auth::user();
 
@@ -59,6 +56,10 @@ Route::post('/login', function (Request $request) {
 
         return redirect()->route('customer.home')->with('success', 'Logged in as User');
     }
+
+    if (Auth::guard('member')->attempt($credentials)) {
+        return redirect()->route('admin.home')->with('success', 'Logged in as Member');
+    }    
 
 
     if (Auth::guard('admin')->attempt($credentials)) {

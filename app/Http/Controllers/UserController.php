@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -32,8 +33,15 @@ class UserController extends Controller
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $isAdmin = Auth::guard('admin')->check();
+
         $data = $request->only(['name', 'email', 'gender', 'country']);
         $data['password'] = bcrypt($request->password);
+
+        if ($isAdmin) {
+            $data['verified'] = true;
+            $data['email_verified_at'] = now();
+        }
 
         if ($request->has('job')) {
             $data['job'] = $request->job;

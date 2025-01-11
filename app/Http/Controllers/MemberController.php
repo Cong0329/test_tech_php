@@ -64,8 +64,9 @@ class MemberController extends Controller
             unset($request['password']);
         }
     
-        $member->update($request->all());
+        $member->update($request->except('password'));
     
         return redirect()->route('member.index')->with('success', 'Member updated successfully.');
+
     }
 }

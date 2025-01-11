@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Login;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Member;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -39,6 +41,32 @@ class LoginController extends Controller
     
             Auth::login($user);
             return redirect()->route('home');
+        }
+
+        $member = Member::where('id', $validated['id'])->first();
+
+        if ($member && Hash::check($validated['password'], $member->password)) {
+            if (!$member->verified) { 
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Please verify your email before logging in.',
+                ]);
+            }
+
+            Auth::guard('member')->login($member);
+            return redirect()->route('admin.home');
+        }
+
+        $admin = Admin::where('id', $validated['id'])->first();
+
+        if ($admin && Hash::check($validated['password'], $admin->password)) {
+            if (!$admin->verified) { 
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Please verify your email before logging in.',
+                ]);
+            }
+
+            Auth::guard('admin')->login($admin);
+            return redirect()->route('admin.home');
         }
     
         return back()->withErrors([
