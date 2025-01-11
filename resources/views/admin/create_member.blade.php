@@ -3,7 +3,7 @@
 @section('member')
     <h1 class="my-4 mx-auto fw-bold">Add Member</h1>
     <div class="container">
-        <form action="{{ route('members.store') }}" method="POST" class="w-50 mx-auto">
+        <form action="{{ route('member.store') }}" method="POST" class="w-50 mx-auto">
             @csrf
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>

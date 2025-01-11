@@ -31,6 +31,10 @@ class User extends Authenticatable
         'password',
         'email_verification_token',
         'verified',
+        'gender',
+        'country',
+        'job',
+        'avatar',
     ];
 
     protected $hidden = [
@@ -42,5 +46,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'verified' => 'boolean',
+        'job' => 'array',
     ];
 }

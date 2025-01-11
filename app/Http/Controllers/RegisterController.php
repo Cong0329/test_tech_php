@@ -49,6 +49,9 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'gender' => 'nullable|in:male,female,other',
+            'country' => 'nullable|string',
+            'job' => 'nullable|array',
         ]);
         
         if ($validator->fails()) {
@@ -62,7 +65,10 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'email_verification_token' => Str::random(32), // Token ngẫu nhiên
+            'email_verification_token' => Str::random(32),
+            'gender' => $request->gender,
+            'country' => $request->country,
+            'job' => json_encode($request->job),
         ]);
 
         // Gửi email xác thực

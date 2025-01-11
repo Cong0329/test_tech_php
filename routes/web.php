@@ -6,6 +6,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,29 +16,25 @@ use Illuminate\Http\Request;
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
 
-// Route xác thực email
 Route::get('/email/verify', function (Request $request) {
     $token = $request->query('token');
 
-    // Kiểm tra token trong DB
     $user = DB::table('users')->where('email_verification_token', $token)->first();
 
     if (!$user) {
         return response('Invalid or expired token.', 400);
     }
 
-    // Cập nhật trạng thái xác thực email
     DB::table('users')->where('id', $user->id)->update([
-        'verified' => true, // Cập nhật verified thành true
-        'email_verified_at' => now(), // Cập nhật thời gian xác thực
-        'email_verification_token' => null, // Xóa token sau khi xác thực
+        'verified' => true,
+        'email_verified_at' => now(),
+        'email_verification_token' => null,
     ]);
 
     return redirect('/login')->with('status', 'Email verified successfully!');
 })->name('verification.verify');
 
 
-// Thêm middleware 'auth' và 'verified' vào các route yêu cầu xác thực email
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 });
@@ -53,7 +50,7 @@ Route::post('/login', function (Request $request) {
         $user = Auth::user();
 
         if (!$user->verified) {
-            Auth::logout(); // Đăng xuất nếu email chưa được xác thực
+            Auth::logout();
             return redirect()->route('login')->withErrors([
                 'email' => 'Please verify your email before logging in.',
             ]);
@@ -82,37 +79,39 @@ Route::middleware(['auth:web'])->group(function () {
         return view('home');
     })->name('home');
 });
-// Route::middleware(['auth:admin'])->group(function () {
-//     Route::get('/admin/home', function () {
+
+// Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
+//     Route::get('/home', function () {
 //         return view('admin.home');
 //     })->name('admin.home');
 
-//     Route::get('/admin/home_child', function () {
+//     Route::get('/home_child', function () {
 //         return view('admin.home_child', ['content' => 'home_child']);
 //     })->name('home_child.index');
-    
-//     Route::get('/admin/member', [MemberController::class, 'index'])->name('member.index');
-//     Route::resource('members', MemberController::class);
 
-//     Route::get('/admin/customer', function () {
+//     Route::get('/member', [MemberController::class, 'index'])->name('member.index');
+//     Route::resource('members', MemberController::class)->only([
+//         'index', 'store', 'edit', 'update', 'destroy'
+//     ]);
+//     Route::get('members/new', [MemberController::class, 'new'])->name('members.new');
+
+
+//     Route::get('/customer', function () {
 //         return view('admin.customer', ['content' => 'customer']);
 //     })->name('customer.index');
 // });
+
 Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/home', function () {
         return view('admin.home');
     })->name('admin.home');
 
-    Route::get('/home_child', function () {
-        return view('admin.home_child', ['content' => 'home_child']);
-    })->name('home_child.index');
-
-    Route::get('/member', [MemberController::class, 'index'])->name('member.index');
-    Route::resource('members', MemberController::class)->only([
-        'index', 'store', 'edit', 'update', 'destroy'
-    ]);
-    Route::get('members/new', [MemberController::class, 'new'])->name('members.new');
-
+    Route::get('/member', [UserController::class, 'index'])->name('member.index');
+    Route::get('/member/new', [UserController::class, 'create'])->name('member.new');
+    Route::post('/member', [UserController::class, 'store'])->name('member.store');
+    Route::get('/member/{id}/edit', [UserController::class, 'edit'])->name('member.edit');
+    Route::put('/member/{id}', [UserController::class, 'update'])->name('member.update');
+    Route::delete('/member/{id}', [UserController::class, 'destroy'])->name('member.destroy');
 
     Route::get('/customer', function () {
         return view('admin.customer', ['content' => 'customer']);

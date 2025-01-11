@@ -17,6 +17,9 @@ class Register extends Model
         'name',
         'email',
         'password',
+        'gender', 
+        'country', 
+        'job',
     ];
 
     // Nếu bạn có cột created_at và updated_at
