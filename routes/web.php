@@ -82,22 +82,45 @@ Route::middleware(['auth:web'])->group(function () {
         return view('home');
     })->name('home');
 });
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/home', function () {
+// Route::middleware(['auth:admin'])->group(function () {
+//     Route::get('/admin/home', function () {
+//         return view('admin.home');
+//     })->name('admin.home');
+
+//     Route::get('/admin/home_child', function () {
+//         return view('admin.home_child', ['content' => 'home_child']);
+//     })->name('home_child.index');
+    
+//     Route::get('/admin/member', [MemberController::class, 'index'])->name('member.index');
+//     Route::resource('members', MemberController::class);
+
+//     Route::get('/admin/customer', function () {
+//         return view('admin.customer', ['content' => 'customer']);
+//     })->name('customer.index');
+// });
+Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
+    Route::get('/home', function () {
         return view('admin.home');
     })->name('admin.home');
 
-    Route::get('/admin/home_child', function () {
+    Route::get('/home_child', function () {
         return view('admin.home_child', ['content' => 'home_child']);
     })->name('home_child.index');
-    
-    Route::get('/admin/member', [MemberController::class, 'index'])->name('member.index');
 
-    Route::get('/admin/customer', function () {
+    Route::get('/member', [MemberController::class, 'index'])->name('member.index');
+    Route::resource('members', MemberController::class)->only([
+        'index', 'store', 'edit', 'update', 'destroy'
+    ]);
+    Route::get('members/new', [MemberController::class, 'new'])->name('members.new');
+
+
+    Route::get('/customer', function () {
         return view('admin.customer', ['content' => 'customer']);
     })->name('customer.index');
 });
 
+
 Route::get('/{any}', function() {
     return redirect()->route('login');
 })->where('any', '.*');
+

@@ -66,28 +66,28 @@
                 <li class="nav-item nav-dad my-1 py-1 {{ Request::is('admin/home') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('/admin/home') }}">
                         <div class="project-nav-list__icon-wrap"></div>
-                        <span class="project-nav-list__text">Home</span>
+                        <span class="project-nav-list__text pl-2">Home</span>
                     </a>
                 </li>
                 
                 <li class="nav-item nav-dad my-1 py-1 {{ Request::is('admin/member') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('/admin/member') }}">
                         <div class="project-nav-list__icon-wrap"></div>
-                        <span class="project-nav-list__text">Member</span>
+                        <span class="project-nav-list__text pl-2">Member</span>
                     </a>
                 </li>
 
                 <li class="nav-item nav-dad my-1 py-1 {{ Request::is('admin/customer') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('/admin/customer') }}">
                         <div class="project-nav-list__icon-wrap"></div>
-                        <span class="project-nav-list__text">Customer</span>
+                        <span class="project-nav-list__text pl-2">Customer</span>
                     </a>
                 </li>
             </ul>
         </div>
 
-        <div class="col-md-9 mx-auto p-2 pt-1 mt-3 text-center bg-white">
-            @if (Request::is('admin/member'))
+        <div class="col-md mx-auto p-2 pt-1 mt-3 text-center bg-white">
+            @if (Request::is('admin/member*'))
                 @yield('member')
             @elseif (Request::is('admin/customer'))
                 @yield('customer')

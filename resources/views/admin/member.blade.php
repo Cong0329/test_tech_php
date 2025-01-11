@@ -1,9 +1,13 @@
 @extends('admin.home')
 
 @section('member')
-<div class="container">
-    <h1 class="my-4">Member List</h1>
-    <table class="table table-striped">
+    <div class="title d-flex align-items-center justify-content-between">
+        <h1 class="my-4 mx-auto fw-bold">Member List</h1>
+        <a href="{{ route('members.new') }}" class="btn btn-success btn mx-5">Add</a>
+    </div>
+
+    
+    <table class="table table-info">
         <thead>
             <tr>
                 <th>#</th>
@@ -21,12 +25,11 @@
                     <td>{{ $member->email }}</td>
                     <td>{{ $member->phone }}</td>
                     <td>
-                        <a href="#" class="btn btn-outline-success btn-sm mx-1">Edit</a>
-                        <a href="#" class="btn btn-outline-danger btn-sm">Delete</a>
+                        <a href="{{ route('members.edit', $member->id) }}" class="btn btn-outline-success py-1 mx-1">Edit</a>
+                        <!-- <a href="{{ route('members.destroy', $member->id) }}" class="btn btn-outline-danger btn-sm">Delete</a> -->
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-</div>
 @endsection

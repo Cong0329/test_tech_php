@@ -50,7 +50,7 @@ class RegisterController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
         ]);
-
+        
         if ($validator->fails()) {
             return redirect()->route('register')
                 ->withErrors($validator)

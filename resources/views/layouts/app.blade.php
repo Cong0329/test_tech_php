@@ -37,7 +37,9 @@
     .nav-item.active {
         background-color: white !important; /* Màu nền khi active */
     }
-
+    td {
+        vertical-align: middle !important;
+    }
     </style>
 </head>
 <body>
