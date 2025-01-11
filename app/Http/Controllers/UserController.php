@@ -4,24 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
     public function index()
     {
-        // $users = User::all();
-        // return view('admin.member', ['users' => $users]);
-
         $perPage = 10;
         $users = User::paginate($perPage);
 
-        return view('admin.member', compact('users'));
+        return view('admin.customer', compact('users'));
     }
 
     public function new()
     {
-        return view('admin.create_member');
+        return view('admin.create_customer');
     }
 
     public function store(Request $request)
@@ -36,32 +32,26 @@ class UserController extends Controller
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // User::create($request->all());
         $data = $request->only(['name', 'email', 'gender', 'country']);
         $data['password'] = bcrypt($request->password);
 
-        // return redirect()->route('member.index')->with('success', 'Member created successfully.');
+        if ($request->has('job')) {
+            $data['job'] = $request->job;
+        }
 
-            // $data = $request->all();
-            // $data['password'] = bcrypt($request->password);
-    
-            if ($request->has('job')) {
-                $data['job'] = $request->job;
-            }
-    
-            if ($request->hasFile('avatar')) {
-                $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
-            }
-    
-            User::create($data);
-    
-            return redirect()->route('member.index')->with('success', 'Member created successfully.');
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
+        User::create($data);
+
+        return redirect()->route('customer.index')->with('success', 'Customer created successfully.');
     }
 
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('admin.edit_member', compact('user'));
+        return view('admin.edit_customer', compact('user'));
     }
 
     public function update(Request $request, $id)
@@ -77,35 +67,28 @@ class UserController extends Controller
         ]);
 
         $user = User::findOrFail($id);
-        $user->update($request->all());
+        $data = $request->only(['name', 'email', 'gender', 'country']);
 
-        // return redirect()->route('member.index')->with('success', 'Member updated successfully.');
-
-        // $user = User::findOrFail($id);
-        // $data = $request->all();
-    
         if ($request->has('job')) {
             $data['job'] = $request->job;
-        }else {
-            $data['job'] = []; 
+        } else {
+            $data['job'] = [];
         }
-    
+
         if ($request->hasFile('avatar')) {
             if ($user->avatar && file_exists(storage_path('app/public/avatars/' . $user->avatar))) {
                 unlink(storage_path('app/public/avatars/' . $user->avatar));
             }
             $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
-    
+
         if (!empty($request->password)) {
             $data['password'] = bcrypt($request->password);
-        } else {
-            unset($data['password']); 
         }
-    
+
         $user->update($data);
-    
-        return redirect()->route('member.index')->with('success', 'Member updated successfully.');
+
+        return redirect()->route('customer.index')->with('success', 'Customer updated successfully.');
     }
 
     public function destroy($id)
@@ -113,6 +96,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('member.index')->with('success', 'Member deleted successfully.');
+        return redirect()->route('customer.index')->with('success', 'Customer deleted successfully.');
     }
 }

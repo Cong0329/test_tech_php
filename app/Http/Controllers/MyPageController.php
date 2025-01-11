@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class HomeChildController extends Controller
+class MyPageController extends Controller
 {
     public function index()
     {
-        return view('admin.home_child');
+        return view('customer.my_page');
     }
 }

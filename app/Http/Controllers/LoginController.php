@@ -24,27 +24,23 @@ class LoginController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|string', // Kiểm tra id
-            'password' => 'required|string', // Kiểm tra password
+            'id' => 'required|string',
+            'password' => 'required|string',
         ]);
     
-        // Tìm người dùng qua ID
         $user = User::where('id', $validated['id'])->first();
     
         if ($user && Hash::check($validated['password'], $user->password)) {
-            // Kiểm tra nếu email đã được xác thực
-            if (!$user->verified) { // Chỉ cho phép login nếu `verified` là true
+            if (!$user->verified) { 
                 return redirect()->route('login')->withErrors([
                     'email' => 'Please verify your email before logging in.',
                 ]);
             }
     
-            // Nếu tất cả đều hợp lệ, đăng nhập người dùng
             Auth::login($user);
             return redirect()->route('home');
         }
     
-        // Nếu thông tin không hợp lệ
         return back()->withErrors([
             'id' => 'The provided credentials are incorrect.',
         ]);

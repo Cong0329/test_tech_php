@@ -5,7 +5,7 @@
         
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container py-1">
-            <a class="navbar-brand" href="{{ url('/admin/home') }}">
+            <a class="navbar-brand" href="{{ url('/customer/home') }}">
                 {{ config('app.name', 'Laravel') }}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -63,22 +63,15 @@
     <div class="row">
         <div class="col-md-2 p-2 pt-1 mt-3" style="height: 100vh; background-color:rgb(21 171 128)">
             <ul class="nav flex-column font-weight-bold">
-                <li class="nav-item nav-dad my-1 py-1 {{ Request::is('admin/home') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('/admin/home') }}">
+                <li class="nav-item nav-dad my-1 py-1 {{ Request::is('customer/home') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('customer.home') }}">
                         <div class="project-nav-list__icon-wrap"></div>
                         <span class="project-nav-list__text pl-2">Home</span>
                     </a>
                 </li>
-                
-                <li class="nav-item nav-dad my-1 py-1 {{ Request::is('admin/member') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('/admin/member') }}">
-                        <div class="project-nav-list__icon-wrap"></div>
-                        <span class="project-nav-list__text pl-2">Member</span>
-                    </a>
-                </li>
 
-                <li class="nav-item nav-dad my-1 py-1 {{ Request::is('admin/customer') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('/admin/customer') }}">
+                <li class="nav-item nav-dad my-1 py-1 {{ Request::is('customer/my_page') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('customer.my_page') }}">
                         <div class="project-nav-list__icon-wrap"></div>
                         <span class="project-nav-list__text pl-2">Customer</span>
                     </a>
@@ -87,12 +80,10 @@
         </div>
 
         <div class="col-md mx-auto p-2 pt-1 mt-3 text-center bg-white">
-            @if (Request::is('admin/member*'))
-                @yield('member')
-            @elseif (Request::is('admin/customer*'))
-                @yield('customer')
+            @if (Request::is('customer/my_page'))
+                @yield('my_page')
             @else
-                <h1 class="my-4 mx-auto fw-bold">Hello Toebisu</h1>
+                @yield('home')
             @endif
         </div>
     </div>

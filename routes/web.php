@@ -11,6 +11,7 @@ use App\Http\Controllers\VerificationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Http\Controllers\MyPageController;
 
 
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
@@ -56,7 +57,7 @@ Route::post('/login', function (Request $request) {
             ]);
         }
 
-        return redirect()->route('home')->with('success', 'Logged in as User');
+        return redirect()->route('customer.home')->with('success', 'Logged in as User');
     }
 
 
@@ -74,52 +75,36 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->name('logout');
 
-Route::middleware(['auth:web'])->group(function () {
-    Route::get('/', function () {
-        return view('home');
-    })->name('home');
+Route::middleware(['auth:web'])->prefix('customer')->group(function () {
+    Route::get('/home', function () {
+        return view('customer.home');
+    })->name('customer.home');
+
+    Route::get('/mypage', [MyPageController::class, 'index'])->name('customer.my_page');
 });
-
-// Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
-//     Route::get('/home', function () {
-//         return view('admin.home');
-//     })->name('admin.home');
-
-//     Route::get('/home_child', function () {
-//         return view('admin.home_child', ['content' => 'home_child']);
-//     })->name('home_child.index');
-
-//     Route::get('/member', [MemberController::class, 'index'])->name('member.index');
-//     Route::resource('members', MemberController::class)->only([
-//         'index', 'store', 'edit', 'update', 'destroy'
-//     ]);
-//     Route::get('members/new', [MemberController::class, 'new'])->name('members.new');
-
-
-//     Route::get('/customer', function () {
-//         return view('admin.customer', ['content' => 'customer']);
-//     })->name('customer.index');
-// });
 
 Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/home', function () {
         return view('admin.home');
     })->name('admin.home');
 
-    Route::get('/member', [UserController::class, 'index'])->name('member.index');
-    Route::get('/member/new', [UserController::class, 'new'])->name('member.new');
-    Route::post('/member', [UserController::class, 'store'])->name('member.store');
-    Route::get('/member/{id}/edit', [UserController::class, 'edit'])->name('member.edit');
-    Route::put('/member/{id}', [UserController::class, 'update'])->name('member.update');
-    Route::delete('/member/{id}', [UserController::class, 'destroy'])->name('member.destroy');
+    Route::get('/member', [MemberController::class, 'index'])->name('member.index');
+    Route::get('/member/new', [MemberController::class, 'new'])->name('member.new');
+    Route::post('/member', [MemberController::class, 'store'])->name('member.store');
+    Route::get('/member/{id}/edit', [MemberController::class, 'edit'])->name('member.edit');
+    Route::put('/member/{id}', [MemberController::class, 'update'])->name('member.update');
+    Route::delete('/member/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
 
-    Route::get('/customer', function () {
-        return view('admin.customer', ['content' => 'customer']);
-    })->name('customer.index');
+    Route::get('/customer', [UserController::class, 'index'])->name('customer.index');
+    Route::get('/customer/new', [UserController::class, 'new'])->name('customer.new');
+    Route::post('/customer', [UserController::class, 'store'])->name('customer.store');
+    Route::get('/customer/{id}/edit', [UserController::class, 'edit'])->name('customer.edit');
+    Route::put('/customer/{id}', [UserController::class, 'update'])->name('customer.update');
+    Route::delete('/customer/{id}', [UserController::class, 'destroy'])->name('customer.destroy');
 });
 
 
-Route::get('/{any}', function() {
-    return redirect()->route('login');
-})->where('any', '.*');
+// Route::get('/{any}', function() {
+//     return redirect()->route('login');
+// })->where('any', '.*');
 
