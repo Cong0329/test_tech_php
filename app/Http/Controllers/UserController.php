@@ -10,8 +10,13 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
-        return view('admin.member', ['users' => $users]);
+        // $users = User::all();
+        // return view('admin.member', ['users' => $users]);
+
+        $perPage = 10;
+        $users = User::paginate($perPage);
+
+        return view('admin.member', compact('users'));
     }
 
     public function new()
@@ -41,7 +46,7 @@ class UserController extends Controller
             // $data['password'] = bcrypt($request->password);
     
             if ($request->has('job')) {
-                $data['job'] = json_encode($request->job);
+                $data['job'] = $request->job;
             }
     
             if ($request->hasFile('avatar')) {
@@ -80,17 +85,22 @@ class UserController extends Controller
         // $data = $request->all();
     
         if ($request->has('job')) {
-            $data['job'] = json_encode($request->job);
+            $data['job'] = $request->job;
+        }else {
+            $data['job'] = []; 
         }
     
         if ($request->hasFile('avatar')) {
+            if ($user->avatar && file_exists(storage_path('app/public/avatars/' . $user->avatar))) {
+                unlink(storage_path('app/public/avatars/' . $user->avatar));
+            }
             $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
     
         if (!empty($request->password)) {
             $data['password'] = bcrypt($request->password);
         } else {
-            unset($data['password']);
+            unset($data['password']); 
         }
     
         $user->update($data);

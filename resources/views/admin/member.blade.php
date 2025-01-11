@@ -1,6 +1,9 @@
 @extends('admin.home')
 
 @section('member')
+<style>
+
+</style>
 <div class="title d-flex align-items-center justify-content-between">
     <h1 class="my-4 mx-auto fw-bold">Member List</h1>
     <a href="{{ route('member.new') }}" class="btn btn-success btn mx-5">Add</a>
@@ -9,19 +12,25 @@
     <thead>
         <tr>
             <th>#</th>
+            <th>Avatar</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Password</th>
+            <th>Gender</th>
+            <th>Country</th>
+            <th>Job</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($users as $user)
         <tr>
-            <td>{{ $loop->iteration }}</td>
+            <td>{{ $loop->iteration + (($users->currentPage() - 1) * $users->perPage()) }}</td>
+            <td><img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;"></td>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
-            <td>{{ $user->password }}</td>
+            <td>{{ $user->gender }}</td>
+            <td>{{ $user->country }}</td>
+            <td>{{ is_array($user->job) ? implode(', ', $user->job) : 'N/A' }}</td>
             <td>
                 <a href="{{ route('member.edit', $user->id) }}" class="btn btn-outline-success py-1 mx-1">Edit</a>
             </td>
@@ -29,4 +38,8 @@
         @endforeach
     </tbody>
 </table>
+<div class="d-flex justify-content-center py-2">
+    {!! $users->links() !!}
+</div>
+
 @endsection

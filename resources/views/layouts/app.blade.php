@@ -40,6 +40,13 @@
     td {
         vertical-align: middle !important;
     }
+    svg.w-5.h-5{
+        height: 20px !important;
+    }
+    p.text-sm.text-gray-700.leading-5.dark\:text-gray-400 {
+        padding-top: 1rem;
+    }
+
     </style>
 </head>
 <body>
