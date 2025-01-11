@@ -44,7 +44,6 @@ class RegisterController extends Controller
 
     public function store(Request $request)
     {
-        // Xác thực dữ liệu
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -60,7 +59,6 @@ class RegisterController extends Controller
                 ->withInput();
         }
 
-        // Tạo người dùng mới và tạo email_verification_token
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -71,7 +69,6 @@ class RegisterController extends Controller
             'job' => json_encode($request->job),
         ]);
 
-        // Gửi email xác thực
         $mailer = new CustomEmailVerification($user);
         if (!$mailer->send()) {
             return redirect()->back()->with('error', 'Failed to send verification email.');

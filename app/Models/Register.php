@@ -9,10 +9,6 @@ class Register extends Model
 {
     use HasFactory;
 
-    // Nếu bảng của bạn không theo quy tắc tên bảng số nhiều tự động
-    // protected $table = 'registers'; 
-
-    // Đảm bảo chỉ các trường sau được phép gán
     protected $fillable = [
         'name',
         'email',
@@ -22,15 +18,10 @@ class Register extends Model
         'job',
     ];
 
-    // Nếu bạn có cột created_at và updated_at
-    // public $timestamps = true;
-
-    // Để bảo mật các trường như password
     protected $hidden = [
         'password',
     ];
 
-    // Để tự động băm password khi lưu
     protected static function boot()
     {
         parent::boot();

@@ -14,7 +14,7 @@ class UserController extends Controller
         return view('admin.member', ['users' => $users]);
     }
 
-    public function create()
+    public function new()
     {
         return view('admin.create_member');
     }
@@ -31,23 +31,26 @@ class UserController extends Controller
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        User::create($request->all());
+        // User::create($request->all());
+        $data = $request->only(['name', 'email', 'gender', 'country']);
+        $data['password'] = bcrypt($request->password);
 
-        return redirect()->route('member.index')->with('success', 'Member created successfully.');
+        // return redirect()->route('member.index')->with('success', 'Member created successfully.');
+
             // $data = $request->all();
             // $data['password'] = bcrypt($request->password);
     
-            // if ($request->has('job')) {
-            //     $data['job'] = json_encode($request->job);
-            // }
+            if ($request->has('job')) {
+                $data['job'] = json_encode($request->job);
+            }
     
-            // if ($request->hasFile('avatar')) {
-            //     $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
-            // }
+            if ($request->hasFile('avatar')) {
+                $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            }
     
-            // User::create($data);
+            User::create($data);
     
-            // return redirect()->route('member.index')->with('success', 'Member created successfully.');
+            return redirect()->route('member.index')->with('success', 'Member created successfully.');
     }
 
     public function edit($id)
@@ -71,29 +74,28 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->update($request->all());
 
-        return redirect()->route('member.index')->with('success', 'Member updated successfully.');
+        // return redirect()->route('member.index')->with('success', 'Member updated successfully.');
+
         // $user = User::findOrFail($id);
         // $data = $request->all();
     
-        // // Xử lý job thành JSON nếu có
-        // if ($request->has('job')) {
-        //     $data['job'] = json_encode($request->job);
-        // }
+        if ($request->has('job')) {
+            $data['job'] = json_encode($request->job);
+        }
     
-        // // Lưu avatar nếu có
-        // if ($request->hasFile('avatar')) {
-        //     $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
-        // }
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
     
-        // if (!empty($request->password)) {
-        //     $data['password'] = bcrypt($request->password);
-        // } else {
-        //     unset($data['password']);
-        // }
+        if (!empty($request->password)) {
+            $data['password'] = bcrypt($request->password);
+        } else {
+            unset($data['password']);
+        }
     
-        // $user->update($data);
+        $user->update($data);
     
-        // return redirect()->route('member.index')->with('success', 'Member updated successfully.');
+        return redirect()->route('member.index')->with('success', 'Member updated successfully.');
     }
 
     public function destroy($id)

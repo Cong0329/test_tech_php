@@ -16,7 +16,7 @@ class VerificationController extends Controller
         }
 
         $user->email_verified_at = now();
-        $user->email_verification_token = null; // Xóa token sau khi xác thực
+        $user->email_verification_token = null;
         $user->save();
 
         return redirect()->route('login')->with('success', 'Email verified successfully.');

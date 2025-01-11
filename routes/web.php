@@ -107,7 +107,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     })->name('admin.home');
 
     Route::get('/member', [UserController::class, 'index'])->name('member.index');
-    Route::get('/member/new', [UserController::class, 'create'])->name('member.new');
+    Route::get('/member/new', [UserController::class, 'new'])->name('member.new');
     Route::post('/member', [UserController::class, 'store'])->name('member.store');
     Route::get('/member/{id}/edit', [UserController::class, 'edit'])->name('member.edit');
     Route::put('/member/{id}', [UserController::class, 'update'])->name('member.update');
