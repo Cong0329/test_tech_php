@@ -11,7 +11,7 @@
 <table class="table table-info">
     <thead>
         <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Avatar</th>
             <th>Name</th>
             <th>Email</th>
@@ -24,7 +24,7 @@
     <tbody>
         @foreach ($users as $user)
         <tr>
-            <td>{{ $loop->iteration + (($users->currentPage() - 1) * $users->perPage()) }}</td>
+            <td>{{ $user->id }}</td>
             <td><img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;"></td>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
@@ -38,6 +38,8 @@
         @endforeach
     </tbody>
 </table>
+<a href="{{ route('customer.export') }}" class="btn btn-info btn mx-5 float-right">Export CSV</a>
+
 <div class="d-flex justify-content-center py-2">
     {!! $users->links() !!}
 </div>

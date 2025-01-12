@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends Controller
 {
@@ -105,5 +106,30 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('customer.index')->with('success', 'Customer deleted successfully.');
+    }
+
+    public function exportCSV()
+    {
+        $customer = User::all();
+
+        $csvHeader = ["ID", "Name", "Email", "Gender", "Country", "Job"]; 
+        $csvData = $customer->map(function ($user) {
+            return [$user->id, $user->name, $user->email,  $user->gender, $user->country,
+            is_array($user->job) ? implode(', ', $user->job) : 'N/A',]; 
+        });
+
+        $response = new StreamedResponse(function () use ($csvHeader, $csvData) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, $csvHeader); 
+            foreach ($csvData as $row) {
+                fputcsv($handle, $row); 
+            }
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="customer.csv"');
+
+        return $response;
     }
 }

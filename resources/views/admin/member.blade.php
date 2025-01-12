@@ -30,6 +30,8 @@
         @endforeach
     </tbody>
 </table>
+<a href="{{ route('member.export') }}" class="btn btn-info btn mx-5 float-right">Export CSV</a>
+
 <div class="d-flex justify-content-center py-2">
     {!! $members->links() !!}
 </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MemberController extends Controller
 {
@@ -81,4 +83,35 @@ class MemberController extends Controller
         return redirect()->route('member.index')->with('success', 'Member updated successfully.');
 
     }
+
+    public function exportCSV()
+    {
+        $members = Member::all();
+        $admins = Admin::all();
+
+        $csvHeader = ["ID", "Name", "Email"];
+        
+        $csvData = $members->map(function ($user) {
+            return [$user->id, $user->name, $user->email, 'Member'];
+        });
+
+        $csvData = $csvData->concat($admins->map(function ($user) {
+            return [$user->id, $user->name, $user->email, 'Admin'];
+        }));
+
+        $response = new StreamedResponse(function () use ($csvHeader, $csvData) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, $csvHeader);
+            foreach ($csvData as $row) {
+                fputcsv($handle, $row);
+            }
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="members.csv"');
+
+        return $response;
+    }
+
 }
