@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\AdminRegistratorController;
 
 
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
@@ -81,7 +82,9 @@ Route::middleware(['auth:web'])->prefix('customer')->group(function () {
         return view('customer.home');
     })->name('customer.home');
 
-    Route::get('/mypage', [MyPageController::class, 'index'])->name('customer.my_page');
+    Route::get('/my_page', [MyPageController::class, 'myPage'])->name('customer.my_page');
+    Route::get('/my_page/{id}/edit_page', [MyPageController::class, 'editMyPage'])->name('customer.edit_page');
+    Route::put('/my_page/{id}', [MyPageController::class, 'updateMyPage'])->name('customer.update_page');
 });
 
 Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
@@ -102,10 +105,15 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/customer/{id}/edit', [UserController::class, 'edit'])->name('customer.edit');
     Route::put('/customer/{id}', [UserController::class, 'update'])->name('customer.update');
     Route::delete('/customer/{id}', [UserController::class, 'destroy'])->name('customer.destroy');
+
+    Route::get('/registrator', [AdminRegistratorController::class, 'index'])->name('registrator.index');
+    Route::get('/registrator/create', [AdminRegistratorController::class, 'create'])->name('registrator.create');
+    Route::post('/registrator', [AdminRegistratorController::class, 'store'])->name('registrator.store');
 });
 
 
-// Route::get('/{any}', function() {
-//     return redirect()->route('login');
-// })->where('any', '.*');
+
+Route::get('/{any}', function() {
+    return redirect()->route('login');
+})->where('any', '.*');
 

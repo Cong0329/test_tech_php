@@ -18,14 +18,13 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($members as $member)
+        @foreach ($allUsers as $user)
         <tr>
-            <!-- <td>{{ $loop->iteration + (($members->currentPage() - 1) * $members->perPage()) }}</td> -->
-            <td>{{ $member->id }}</td>
-            <td>{{ $member->name }}</td>
-            <td>{{ $member->email }}</td>
+            <td>{{ $user->id }}</td>
+            <td>{{ $user->name }}</td>
+            <td>{{ $user->email }}</td>
             <td>
-                <a href="{{ route('member.edit', $member->id) }}" class="btn btn-outline-success py-1 mx-1">Edit</a>
+                <a href="{{ route('member.edit', $user->id) }}" class="btn btn-outline-success py-1 mx-1">Edit</a>
             </td>
         </tr>
         @endforeach

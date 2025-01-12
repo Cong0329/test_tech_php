@@ -73,17 +73,17 @@
                 <li class="nav-item nav-dad my-1 py-1 {{ Request::is('customer/my_page') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('customer.my_page') }}">
                         <div class="project-nav-list__icon-wrap"></div>
-                        <span class="project-nav-list__text pl-2">Customer</span>
+                        <span class="project-nav-list__text pl-2">My Page</span>
                     </a>
                 </li>
             </ul>
         </div>
 
         <div class="col-md mx-auto p-2 pt-1 mt-3 text-center bg-white">
-            @if (Request::is('customer/my_page'))
+            @if (Request::is('customer/my_page*'))
                 @yield('my_page')
             @else
-                @yield('home')
+                <h1 class="my-4 mx-auto fw-bold">Hello Toebisu</h1>
             @endif
         </div>
     </div>

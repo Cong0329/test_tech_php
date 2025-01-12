@@ -3,16 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
     public function index()
     {
-        $perPage = 10;
-        $members = Member::paginate($perPage);
+        // $perPage = 10;
+        // $members = Member::paginate($perPage);
 
-        return view('admin.member', compact('members'));
+        // return view('admin.member', compact('members'));
+
+        $members = Member::paginate(10);
+        $admins = Admin::paginate(10); 
+        
+        $allUsers = $members->concat($admins); 
+
+        return view('admin.member', compact('allUsers', 'members'));
     }
 
     public function new()
@@ -22,22 +30,26 @@ class MemberController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'id' => 'required|string|max:255|unique:members,id',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:members',
+        $validated = $request->validate([
+            'id' => 'required|string|max:8|unique:members,id',
+            'name' => 'string|max:255',
+            'email' => 'email|unique:members',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // $data = $request->only(['name', 'email', 'gender', 'country']);
-        // $data['password'] = bcrypt($request->password);
-
-        $data = $request->only(['id','name', 'email']);
-        $data['password'] = bcrypt($request->password);
-
+        if (!str_starts_with($validated['id'], 'MB')) {
+            $validated['id'] = 'MB' . $validated['id'];
+        }
+    
+        $data = [
+            'id' => $validated['id'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+        ];
+    
         Member::create($data);
-
-
+    
         return redirect()->route('member.index')->with('success', 'Member created successfully.');
     }
 

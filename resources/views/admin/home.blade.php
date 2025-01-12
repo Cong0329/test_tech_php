@@ -83,6 +83,12 @@
                         <span class="project-nav-list__text pl-2">Customer</span>
                     </a>
                 </li>
+                <li class="nav-item nav-dad my-1 py-1 {{ Request::is('admin/registrator') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('/admin/registrator') }}">
+                        <div class="project-nav-list__icon-wrap"></div>
+                        <span class="project-nav-list__text pl-2">Registrator</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -91,6 +97,8 @@
                 @yield('member')
             @elseif (Request::is('admin/customer*'))
                 @yield('customer')
+            @elseif (Request::is('admin/registrator*'))
+                @yield('registrator')
             @else
                 <h1 class="my-4 mx-auto fw-bold">Hello Toebisu</h1>
             @endif

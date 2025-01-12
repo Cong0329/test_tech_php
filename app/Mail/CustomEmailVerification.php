@@ -35,8 +35,11 @@ class CustomEmailVerification
             // Email content
             $mail->isHTML(true);
             $mail->Subject = "Email Verification";
-            $mail->Body = "Click the link below to verify your email: <br>
-            <a href='".url('email/verify?token='.$this->user->email_verification_token)."'>Verify Email</a>";
+            $mail->Body = "Hello " . $this->user->name . ",<br><br>
+            Click the link below to verify your email: <br>
+            <a href='" . url('email/verify?token=' . $this->user->email_verification_token . '&id=' . $this->user->id) . "'>Verify Email</a><br><br>
+            Your User ID: " . $this->user->id . " From now on use this ID to log in.<br><br>
+            Thank you for registering!";
 
 
             // Send email

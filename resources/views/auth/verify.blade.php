@@ -25,11 +25,11 @@
         </div>
     </div> -->
 
-    <p>Hello {{ $user->name }},</p>
+    <!-- <p>Hello {{ $user->name }},</p>
     <p>Please verify your email by clicking the link below:</p>
     <a href="{{ url('email/verify/' . $user->id . '/' . $user->email_verification_token) }}">
         Verify Email
-    </a>
+    </a> -->
 
 
 </div>
