@@ -33,7 +33,7 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|string|max:8|unique:members,id',
+            'id' => 'required|string|max:8',
             'name' => 'string|max:255',
             'email' => 'email|unique:members',
             'password' => 'required|string|min:8|confirmed',
@@ -42,18 +42,23 @@ class MemberController extends Controller
         if (!str_starts_with($validated['id'], 'MB')) {
             $validated['id'] = 'MB' . $validated['id'];
         }
-    
+
+        if (Member::where('id', $validated['id'])->exists()) {
+            return back()->withErrors(['id' => 'The ID is already taken. Please choose another one.'])->withInput();
+        }
+
         $data = [
             'id' => $validated['id'],
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
         ];
-    
+
         Member::create($data);
-    
+
         return redirect()->route('member.index')->with('success', 'Member created successfully.');
     }
+
 
     public function edit($id)
     {

@@ -13,6 +13,9 @@
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" required>
             </div>
+            @error('email')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
             <div class="mb-3">
                 <label for="gender" class="form-label">Gender</label>
                 <select class="form-select" id="gender" name="gender">

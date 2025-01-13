@@ -19,25 +19,31 @@ class AdminRegistratorController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|string|max:8|unique:members,id',
+            'id' => 'required|string|max:8', 
             'name' => 'string|max:255',
-            'email' => 'email|unique:members',
+            'email' => 'email|unique:admins,email', 
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         if (!str_starts_with($validated['id'], 'AD')) {
             $validated['id'] = 'AD' . $validated['id'];
         }
-    
+
+        if (Admin::where('id', $validated['id'])->exists()) {
+            return back()->withErrors(['id' => 'The ID is already taken. Please choose another one.'])->withInput();
+        }
+
         $data = [
             'id' => $validated['id'],
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
         ];
-    
+
         Admin::create($data);
-    
+
         return redirect()->route('member.index')->with('success', 'Admin created successfully.');
     }
+
+
 }
